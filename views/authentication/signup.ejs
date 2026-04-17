@@ -1,0 +1,136 @@
+<%layout("layout/boilerplate")%>
+<div class="signup-form row mt-4">
+  <div class="auth-panel">
+    <h1 class="mb-3">Signup for local BAI ;)</h1>
+    <form action="/signup" method="POST" novalidate class="needs-validation">
+      <div class="mb-3">
+        <input
+          name="username"
+          placeholder="Enter your full name"
+          type="text"
+          class="form-control"
+          required
+        />
+        <div class="valid-feedback">Good name</div>
+        <div class="invalid-feedback">Enter a name</div>
+      </div>
+      <div class="mb-3">
+        <input
+          name="password"
+          placeholder="Password"
+          type="password"
+          class="form-control"
+          required
+        />
+        <div class="valid-feedback">Don't forget your password :)</div>
+        <div class="invalid-feedback">Password not entered</div>
+      </div>
+      <div class="mb-3">
+        <input
+          name="email"
+          placeholder="Email"
+          type="text"
+          class="form-control"
+        />
+      </div>
+      <div class="mb-3">
+        <input
+          name="contact"
+          placeholder="Phone Number"
+          type="text"
+          class="form-control"
+          required
+        />
+        <div class="invalid-feedback">Enter a physical phone number</div>
+      </div>
+      <div class="row">
+        <div class="mb-3 col-sm-6">
+          <input
+            id="areaInput"
+            name="area"
+            placeholder="Area (e.g Sector 46)"
+            type="text"
+            class="form-control"
+            required
+          />
+          <div class="invalid-feedback">Enter area name</div>
+        </div>
+        <div class="mb-3 col-sm-6">
+          <input
+            id="cityInput"
+            name="city"
+            placeholder="City"
+            type="text"
+            class="form-control"
+            required
+          />
+          <div class="invalid-feedback">Enter your city</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <input
+          id="countryInput"
+          name="country"
+          placeholder="Country"
+          type="text"
+          class="form-control"
+          required
+        />
+        <div class="invalid-feedback">Enter your country</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  async function reverseGeocode(lat, lng) {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`,
+      { headers: { "Accept-Language": "en" } }
+    );
+    if (!res.ok) throw new Error("Failed");
+    return res.json();
+  }
+
+  window.addEventListener("load", () => {
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const data = await reverseGeocode(latitude, longitude);
+          const addr = data.address || {};
+
+          const area =
+            addr.suburb ||
+            addr.neighbourhood ||
+            addr.quarter ||
+            addr.village ||
+            addr.road ||
+            "";
+          if (area) document.getElementById("areaInput").value = area;
+
+          const city =
+            addr.city ||
+            addr.town ||
+            addr.city_district ||
+            addr.municipality ||
+            addr.county ||
+            "";
+          if (city) document.getElementById("cityInput").value = city;
+
+          if (addr.country) {
+            document.getElementById("countryInput").value = addr.country;
+          }
+        } catch (e) {
+          console.warn("Reverse geocoding failed:", e);
+        }
+      },
+      () => {}
+    );
+  });
+</script>

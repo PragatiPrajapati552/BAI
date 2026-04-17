@@ -1,0 +1,102 @@
+<%layout("layout/boilerplate")%>
+
+<div class="container mt-5">
+  <div class="card card-body shadow-sm mb-4 profile-hero-card">
+    <div class="row align-items-center">
+      <div class="col-md-2 text-center">
+        <img src="<%= maidData.image %>" onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'" class="rounded-circle img-fluid booking-avatar" alt="Profile Picture">
+      </div>
+      <div class="col-md-10">
+        <h2 class="text-dark">Welcome, <%= maidData.username %>!</h2>
+        <p class="text-muted mb-0">Manage your upcoming bookings and appointments.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm p-4">
+    <h4 class="mb-3">Booking Requests</h4>
+    
+    <% if(bookings && bookings.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Date & Time</th>
+              <th scope="col">Service</th>
+              <th scope="col">Client details</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% bookings.forEach(booking => { %>
+              <tr>
+                <td>
+                  <strong><%= booking.date ? booking.date.split('-').reverse().join('-') : 'N/A' %></strong><br>
+                  <small class="text-muted"><%= booking.timeSlot %></small>
+                </td>
+                <td>
+                  <% booking.services.forEach(s => { %>
+                    <span class="badge bg-secondary"><%= s.toUpperCase() %></span>
+                  <% }) %>
+                </td>
+                <td>
+                  <strong><%= booking.user.username %></strong><br>
+                  <small><%= booking.user.city %>, <%= booking.user.area %></small><br>
+                  <% if(booking.status === 'Accepted' || booking.status === 'Completed') { %>
+                    <small>📞 <%= booking.user.contact ? booking.user.contact : 'N/A (Old User)' %></small> <br>
+                    <small>📧 <%= booking.user.email || 'Not provided' %></small> 
+                  <% } else { %>
+                    <small class="text-danger">Accept to view contact</small>
+                  <% } %>
+                </td>
+                <td>
+                  <% if(booking.status === 'Pending') { %>
+                    <span class="badge bg-warning text-dark">Pending</span>
+                  <% } else if(booking.status === 'Accepted') { %>
+                    <span class="badge bg-success">Accepted</span>
+                  <% } else if(booking.status === 'Completed') { %>
+                    <span class="badge bg-info">Completed</span>
+                  <% } else if(booking.status === 'Cancelled') { %>
+                    <span class="badge bg-secondary"><i class="fa-solid fa-ban"></i> Cancelled</span>
+                  <% } else { %>
+                    <span class="badge bg-danger">Rejected</span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if(booking.status === 'Pending') { %>
+                    <form action="/booking/<%= booking._id %>/Accepted" method="POST" class="mb-2">
+                      <div class="text-start mb-2">
+                        <small class="text-muted d-block mb-1">Accept services:</small>
+                        <% booking.services.forEach(s => { %>
+                          <div class="form-check form-check-inline m-0 me-2" style="font-size: 0.8rem;">
+                            <input class="form-check-input" type="checkbox" name="acceptedServices" value="<%=s%>" checked>
+                            <label class="form-check-label"><%= s %></label>
+                          </div>
+                        <% }) %>
+                      </div>
+                      <button class="btn btn-sm btn-success w-100 mb-1">Accept Selected</button>
+                    </form>
+                    <form action="/booking/<%= booking._id %>/Rejected" method="POST">
+                      <button class="btn btn-sm btn-danger w-100">Reject Entirely</button>
+                    </form>
+                  <% } else if (booking.status === 'Accepted') { %>
+                    <form action="/booking/<%= booking._id %>/Completed" method="POST" class="d-inline">
+                      <button class="btn btn-sm btn-primary">Mark Completed</button>
+                    </form>
+                  <% } else if (booking.status === 'Cancelled') { %>
+                    <span class="text-danger fw-bold"><i class="fa-solid fa-ban"></i> Cancelled by Client</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="alert alert-info" role="alert">
+        You don't have any booking requests yet.
+      </div>
+    <% } %>
+  </div>
+</div>

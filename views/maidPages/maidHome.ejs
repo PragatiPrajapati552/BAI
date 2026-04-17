@@ -1,0 +1,19 @@
+<%layout("layout/boilerplate")%>
+<div class="profile">
+  <img
+    src="<%=maidData.image%>"
+    onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'"
+    style="object-fit: cover;"
+    class="mProfileImage"
+    alt="Your profile picture"
+  />
+  <div class="mProfileData">
+    <p class="mProfileName">Name: <%=maidData.username%></p>
+    <p class="mProfileContact">Contact: <%=maidData.contact%></p>
+    <p class="mProfileServices">Skills: <%=maidData.services.join(", ")%></p>
+    <p class="mProfileRate"> Price: <%= new Intl.NumberFormat("en-IN", { style: "currency",currency: "INR",maximumFractionDigits: 0}).format(maidData.rate) %>/hr</p>
+    <p class="mProfileExperience">Experience: <%=maidData.experience%> years</p>
+    <p class="mProfileCity">Service Area: <%=maidData.serviceArea%>, <%=maidData.city%></p>
+    <p class="mProfileCountry">Country: <%=maidData.country%></p>
+  </div>
+</div>

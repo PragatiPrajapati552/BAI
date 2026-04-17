@@ -1,0 +1,113 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/"><i class="fa-solid fa-broom"></i>Bai</a>
+    <%if(!maid && !user){%>
+    <div class="dropdown mobile-register mx-auto">
+      <button
+        class="btn-secondary dropdown-toggle maidRegister"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        Register as BAI
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="/maidSignup">Signup</a></li>
+        <li><a class="dropdown-item" href="/maidLogin">Login</a></li>
+      </ul>
+    </div>
+    <%}%>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/">Home</a>
+        </li>
+        <% if(typeof user !== 'undefined' && user){ %>
+          <li class="nav-item">
+            <a class="nav-link" href="/myBookings">My Bookings <span class="text-danger">*</span></a>
+          </li>
+        <% } %>
+        <%if(!maid && !user){%>
+
+        <li class="nav-item dropdown-center desktop-register">
+          <button
+            class="btn-secondary dropdown-toggle mt-1 maidRegister"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Register as BAI
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/maidSignup">Signup</a></li>
+            <li><a class="dropdown-item" href="/maidLogin">Login</a></li>
+          </ul>
+        </li>
+        <%}%>
+      </ul>
+
+      <form class="d-flex mx-auto search-bar-form" role="search">
+        <div class="input-icon-container flex-grow-1">
+          <i class="fa-solid fa-location-dot"></i>
+          <input
+            class="form-control"
+            type="text"
+            placeholder="Enter your location"
+            aria-label="Location"
+          />
+        </div>
+
+        <div class="input-icon-container flex-grow-1">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input
+            class="form-control"
+            type="search"
+            placeholder="Search for maids, cooks..."
+            aria-label="Search"
+          />
+        </div>
+      </form>
+
+      <div class="d-flex align-items-center ms-auto">
+        <%if(!user && !maid){%>
+        <ul class="navbar-nav flex-row gap-2">
+          <li class="nav-item">
+            <a class="nav-link" href="/signup">SignUp</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+        </ul>
+        <%}%>
+        <%if(user || maid){%>
+        <div class="btn-group dropstart">
+          <button
+            class="btn btn-secondary btn-sm dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fa-solid fa-user"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item"> <%= user ? user.username : maid.username %> </a></li>
+            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+          </ul>
+        </div>
+        <%}%>
+      </div>
+    </div>
+  </div>
+</nav>

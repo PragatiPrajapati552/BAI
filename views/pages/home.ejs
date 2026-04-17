@@ -1,0 +1,70 @@
+<%layout("layout/boilerplate")%>
+<div class="card-box">
+  <div class="card service-card">
+    <img
+      src="/images/cleaning.png"
+      class="card-img-top"
+      alt="Women cleaning floor"
+    />
+    <div class="card-body">
+      <h5 class="card-title">Cleaning</h5>
+      <p class="card-text">Search for best local cleaners around you.</p>
+      <form action="/cleaning" method="GET">
+        <button name="service" value="cleaning" class="btn btn-primary">
+          Book now
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="card service-card">
+    <img
+      src="/images/cooking.png"
+      class="card-img-top"
+      alt="Women cooking food"
+    />
+    <div class="card-body">
+      <h5 class="card-title">Cooking</h5>
+      <p class="card-text">
+        Food is life. Search for good cooks around you now !
+      </p>
+      <form action="/cooking" method="GET">
+        <button name="service" value="cooking" class="btn btn-primary">
+          Book now
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="card service-card">
+    <img
+      src="/images/dish_washing.png"
+      class="card-img-top"
+      alt="women cleaning dishes"
+    />
+    <div class="card-body">
+      <h5 class="card-title">Dish washing</h5>
+      <p class="card-text">Get someone to clean your dirty utensils.</p>
+      <form action="/dishWashing" method="GET">
+        <button name="service" value="dishWashing" class="btn btn-primary">
+          Book now
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="card service-card">
+    <img
+      src="/images/laundry.png"
+      class="card-img-top"
+      alt="Men doing laundry"
+    />
+    <div class="card-body">
+      <h5 class="card-title">Laundry</h5>
+      <p class="card-text">Find someone to do your laundry on your behalf.</p>
+      <form action="/laundry" method="GET">
+        <button name="service" value="laundry" class="btn btn-primary">
+          Book now
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

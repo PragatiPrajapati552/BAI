@@ -1,0 +1,123 @@
+<%layout("layout/boilerplate")%>
+<div class="container mb-5">
+  <div class="pro-card-container">
+    <% for(let maid of filterMaid){%>
+      <div class="pro-card">
+        <div class="pro-avatar-wrapper">
+          <img src="<%=maid.image%>" onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'" alt="Avatar">
+        </div>
+        
+        <h5 class="pro-name"><%=maid.username%></h5>
+        
+        <div class="pro-details-grid">
+          <div class="pro-label">Services</div>
+          <div class="pro-value">
+            <%=maid.services.join(", ")%> <br>
+            <small style="color: #f8fafc;"><%=maid.experience%> years exp.</small>
+          </div>
+          
+          <div class="pro-label">Location</div>
+          <div class="pro-value"><%=maid.serviceArea%>, <%=maid.city%></div>
+          
+          <div class="pro-label">Price</div>
+          <div class="pro-value"><strong><%= new Intl.NumberFormat("en-IN", { style: "currency",currency: "INR",maximumFractionDigits: 0}).format(maid.rate) %>/hr</strong></div>
+        </div>
+        
+        <% if(typeof user !== 'undefined' && user) { %>
+          <button class="btn btn-primary text-white pro-book-btn" data-bs-toggle="collapse" data-bs-target="#book-<%=maid._id%>">Book Now</button>
+          <button class="pro-review-link" data-bs-toggle="collapse" data-bs-target="#review-<%=maid._id%>">Leave Review</button>
+        <% } else { %>
+          <a href="/login" class="btn btn-primary text-white pro-book-btn">Login to Book</a>
+        <% } %>
+        
+        <% if(typeof user !== 'undefined' && user) { %>
+        <!-- Booking Form (Collapsible) -->
+        <div class="collapse mt-3" id="book-<%=maid._id%>">
+          <div class="card card-body bg-light border-0 shadow-sm text-start" style="font-size: 0.85rem;">
+            <p class="mb-2 fw-bold text-dark">Book <%=maid.username%></p>
+            <form action="/book/<%=maid._id%>" method="POST" class="booking-form">
+              <div class="mb-2">
+                <label class="form-label mb-1"><small><strong>Select Services:</strong></small></label>
+                <div class="d-flex flex-wrap gap-2">
+                  <% maid.services.forEach(s => { %>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="services" value="<%=s%>" id="service-<%=maid._id%>-<%=s%>">
+                      <label class="form-check-label" for="service-<%=maid._id%>-<%=s%>"><%=s%></label>
+                    </div>
+                  <% }) %>
+                </div>
+              </div>
+                <div class="row g-2 mb-2">
+                <div class="col-sm-6">
+                  <label class="form-label mb-1"><small>Date</small></label>
+                  <input type="date" name="date" class="form-control form-control-sm booking-date" required>
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label mb-1"><small>Time</small></label>
+                  <input type="time" name="timeSlot" class="form-control form-control-sm booking-time" required>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-success btn-sm w-100 fw-bold">Send Request</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Review Form (Collapsible) -->
+        <div class="collapse mt-3" id="review-<%=maid._id%>">
+          <div class="card card-body bg-light border-0 shadow-sm text-start" style="font-size: 0.85rem;">
+            <form action="/maid/<%=maid._id%>/review" method="POST">
+              <p class="mb-2 fw-bold text-dark">Rate & Review</p>
+              <div class="input-group input-group-sm mb-2 review-input-group">
+                <select name="rating" class="form-select" style="max-width: 95px;" required>
+                  <option value="5">5 Star ⭐</option>
+                  <option value="4">4 Star ⭐</option>
+                  <option value="3">3 Star ⭐</option>
+                  <option value="2">2 Star ⭐</option>
+                  <option value="1">1 Star ⭐</option>
+                </select>
+                <input type="text" name="comment" class="form-control" placeholder="Write a review..." required>
+                <button class="btn btn-dark" type="submit">Post</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Display Reviews -->
+        <% if(maid.reviews && maid.reviews.length > 0) { %>
+          <div class="mt-3 text-start bg-light text-dark rounded p-2 shadow-sm" style="max-height: 120px; overflow-y: auto;">
+            <small class="text-secondary fw-bold d-block mb-1">Reviews (<%=maid.reviews.length%>)</small>
+            <ul class="list-unstyled mb-0">
+              <% maid.reviews.forEach(review => { %>
+                <li class="border-bottom border-secondary-subtle pb-3 mb-2" style="font-size: 1.05rem;">
+                  <strong>
+                    <% for(let i=0; i<review.rating; i++) { %><i class="fa-solid fa-star text-warning"></i><% } %><% for(let i=review.rating; i<5; i++) { %><i class="fa-regular fa-star text-secondary"></i><% } %>
+                  </strong> - <span class="fw-medium"><%=review.comment%></span> 
+                  <br>
+                  <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="text-secondary" style="color: #637182 !important; font-size: 0.95rem;">By <strong><%= review.author ? review.author.username : 'User' %></strong></span>
+                    <% if(typeof user !== 'undefined' && user && review.author && user._id.equals(review.author._id ? review.author._id : review.author)) { %>
+                      <form action="/maid/<%= maid._id %>/review/<%= review._id %>/delete" method="POST" class="d-inline m-0">
+                        <button type="submit" class="text-danger p-0 m-0 text-decoration-none fw-bold" style="background: none; border: none; font-size: 0.95rem;"><i class="fa-solid fa-trash"></i> Delete</button>
+                      </form>
+                    <% } %>
+                  </div>
+                </li>
+              <% }) %>
+            </ul>
+          </div>
+        <% } %>
+
+      </div>
+    <%}%>
+  </div>
+
+  <% if(filterMaid.length === 0) { %>
+    <div class="alert alert-info mt-4 text-center">
+      <i class="fa-solid fa-magnifying-glass me-2"></i>
+      No maids found for the selected services. Try going back and selecting different options.
+      <br><a href="/" class="btn btn-primary btn-sm mt-2">Back to Home</a>
+    </div>
+  <% } %>
+
+</div>

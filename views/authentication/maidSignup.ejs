@@ -1,0 +1,197 @@
+<%layout("layout/boilerplate")%>
+<div class="signup-form row mt-4">
+  <div class="auth-panel">
+    <h1 class="mb-3">Signup as our BAI ;)</h1>
+    <form
+      action="/maidSignup"
+      method="POST"
+      novalidate
+      class="needs-validation"
+    >
+      <div class="mb-2">
+        <input
+          name="username"
+          placeholder="Enter your full name"
+          type="text"
+          class="form-control"
+          required
+        />
+        <div class="valid-feedback">Good name</div>
+        <div class="invalid-feedback">Enter a name</div>
+      </div>
+      <div class="mb-2">
+        <input
+          name="password"
+          placeholder="Password"
+          type="password"
+          class="form-control"
+          required
+        />
+        <div class="valid-feedback">Don't forget your password :)</div>
+        <div class="invalid-feedback">Password not entered</div>
+      </div>
+      <div class="mb-2">
+        <input
+          name="contact"
+          placeholder="Contact"
+          type="tel"
+          class="form-control"
+          required
+        />
+        <div class="invalid-feedback">Enter a valid contact</div>
+      </div>
+      <div class="mb-2">
+        <input
+          name="image"
+          placeholder="Profile Image URL (optional)"
+          type="text"
+          class="form-control"
+        />
+        <div class="invalid-feedback">Enter a image</div>
+      </div>
+      <div class="row align-items-start mt-2">
+        <div class="col-md-6">
+          <div class="form-control mb-2" id="skills-box">
+            <p class="mb-1 fw-bold">Skills</p>
+
+            <label
+              ><input type="checkbox" name="services" value="cleaning" />
+              Cleaning</label
+            ><br />
+            <label
+              ><input type="checkbox" name="services" value="cooking" />
+              Cooking</label
+            ><br />
+            <label
+              ><input type="checkbox" name="services" value="laundry" />
+              Laundry</label
+            ><br />
+            <label
+              ><input type="checkbox" name="services" value="dishWashing" />
+              Dish Washing</label
+            ><br />
+          </div>
+          <div id="skills-error" class="text-danger mt-1" style="display: none">
+            Please select at least one skill.
+          </div>
+        </div>
+
+        <!-- RIGHT: Experience & Charges per hour -->
+        <div class="col-md-6">
+          <div class="mb-2">
+            <input
+              name="experience"
+              placeholder="Enter your experience (in years)"
+              type="number"
+              class="form-control"
+              min="0"
+            />
+          </div>
+
+          <div class="mb-2">
+            <input
+              name="rate"
+              placeholder="Charges per hour"
+              type="number"
+              class="form-control"
+              required
+              min="0"
+            />
+            <div class="invalid-feedback">Enter a valid amount</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="mb-2 col-sm-6">
+          <input
+            id="serviceAreaInput"
+            name="serviceArea"
+            placeholder="Service Area (e.g Sector 46)"
+            type="text"
+            class="form-control"
+            required
+          />
+          <div class="invalid-feedback">Enter area name</div>
+        </div>
+        <div class="mb-2 col-sm-6">
+          <input
+            id="cityInput"
+            name="city"
+            placeholder="City"
+            type="text"
+            class="form-control"
+            required
+          />
+          <div class="invalid-feedback">Enter your city</div>
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <input
+          id="countryInput"
+          name="country"
+          placeholder="Country"
+          type="text"
+          class="form-control"
+          required
+        />
+        <div class="invalid-feedback">Enter your country</div>
+      </div>
+
+      <input type="hidden" name="lat" id="lat" />
+      <input type="hidden" name="lng" id="lng" />
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  async function reverseGeocode(lat, lng) {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`;
+    const res = await fetch(url, { headers: { "Accept-Language": "en" } });
+    if (!res.ok) throw new Error("Nominatim request failed");
+    return res.json();
+  }
+
+  window.addEventListener("load", () => {
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+
+      // ✅ GPS GRANTED — auto-fill all location fields
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        // Store coordinates in hidden inputs
+        document.getElementById("lat").value = latitude;
+        document.getElementById("lng").value = longitude;
+
+        try {
+          const data = await reverseGeocode(latitude, longitude);
+          const addr = data.address || {};
+
+          console.log("📍 Nominatim address:", addr); // open DevTools > Console to see all fields
+
+          // Fill Service Area (most local field first)
+          const area = addr.suburb || addr.neighbourhood || addr.quarter || addr.village || addr.road || "";
+          if (area) document.getElementById("serviceAreaInput").value = area;
+
+          // Fill City (plain text — first meaningful city field)
+          const city = addr.city || addr.town || addr.city_district || addr.municipality || addr.county || "";
+          if (city) document.getElementById("cityInput").value = city;
+
+          // Fill Country
+          if (addr.country) document.getElementById("countryInput").value = addr.country;
+
+        } catch (e) {
+          console.warn("Reverse geocoding failed:", e);
+        }
+      },
+
+      // ❌ GPS DENIED — do nothing, user fills manually
+      () => {}
+    );
+  });
+</script>

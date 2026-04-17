@@ -1,0 +1,27 @@
+<%layout("layout/boilerplate")%>
+<div class="signup-form row mt-4">
+  <div class="auth-panel auth-panel-sm">
+    <h1 class="mb-3">Welcome Back !</h1>
+    <form action="/login" method="POST" novalidate class="needs-validation">
+      <div class="mb-3">
+        <input
+          name="username"
+          placeholder="Username"
+          type="text"
+          class="form-control"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <input
+          name="password"
+          placeholder="Password"
+          type="password"
+          class="form-control"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>

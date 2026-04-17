@@ -1,0 +1,75 @@
+<%layout("layout/boilerplate")%>
+
+<div class="container mt-5">
+  <h2 class="mb-4">My Bookings</h2>
+
+  <% if(bookings && bookings.length > 0) { %>
+    <div class="row">
+      <% bookings.forEach(booking => { %>
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm h-100">
+            <div class="row g-0 h-100">
+              <div class="col-md-4">
+                <img 
+                  src="<%= booking.maid.image %>" 
+                  onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'"
+                  class="img-fluid rounded-start h-100" 
+                  alt="Maid Profile"
+                  style="object-fit: cover;"
+                >
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title"><%= booking.maid.username %></h5>
+                  
+                  <p class="card-text mb-1">
+                    <strong>Date & Time:</strong> <%= booking.date ? booking.date.split('-').reverse().join('-') : 'N/A' %> at <%= booking.timeSlot %>
+                  </p>
+                  
+                  <p class="card-text mb-1">
+                    <strong>Services requested:</strong> 
+                    <% booking.services.forEach(s => { %>
+                      <span class="badge bg-secondary"><%= s %></span>
+                    <% }) %>
+                  </p>
+
+                  <p class="card-text mt-3">
+                    <strong>Status:</strong>
+                    <% if(booking.status === 'Pending') { %>
+                      <span class="badge bg-warning text-dark"><i class="fa-regular fa-clock"></i> Pending (Sent)</span>
+                    <% } else if(booking.status === 'Accepted') { %>
+                      <span class="badge bg-success"><i class="fa-solid fa-check"></i> Accepted</span>
+                    <% } else if(booking.status === 'Completed') { %>
+                      <span class="badge bg-info"><i class="fa-solid fa-star"></i> Completed</span>
+                    <% } else if(booking.status === 'Cancelled') { %>
+                      <span class="badge bg-secondary"><i class="fa-solid fa-ban"></i> Cancelled</span>
+                    <% } else { %>
+                      <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i> Rejected</span>
+                    <% } %>
+                  </p>
+
+                  <% if(booking.status === 'Pending' || booking.status === 'Accepted') { %>
+                    <form action="/user/booking/<%= booking._id %>/cancel" method="POST" class="mb-2">
+                      <button type="submit" class="btn btn-sm btn-outline-danger">Cancel Booking</button>
+                    </form>
+                  <% } %>
+
+                  <hr>
+                  <% if(booking.status === 'Accepted' || booking.status === 'Completed') { %>
+                    <p class="text-success mb-0"><small><strong>Maid Contact:</strong> <%= booking.maid.contact %></small></p>
+                  <% } else { %>
+                    <p class="text-muted mb-0"><small>Contact info will be available when accepted.</small></p>
+                  <% } %>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="alert alert-info">You haven't booked any services yet! Head over to the home page to search for local maids.</div>
+    <a href="/" class="btn btn-primary">Find Maids</a>
+  <% } %>
+</div>
