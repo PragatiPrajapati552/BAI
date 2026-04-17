@@ -108,39 +108,7 @@ Start in development mode with auto-reload:
 npm run dev
 ```
 
-## Running Tests
 
-This project includes a lightweight test script for core business logic and middleware.
-
-Run:
-
-```bash
-npm test
-```
-
-Current tests cover:
-- booking date-time parsing
-- invalid booking date-time handling
-- `isUser` middleware behavior
-- `isMaid` middleware behavior
-
-## Database Seed Scripts
-
-This project contains sample seed files in `database/initdata/`.
-
-Run user seed data:
-
-```bash
-node database/initdata/inituser.js
-```
-
-Run maid seed data:
-
-```bash
-node database/initdata/initmaid.js
-```
-
-Make sure your `.env` is configured before running these scripts.
 
 ## Main Application Flow
 
