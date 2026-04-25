@@ -4,7 +4,7 @@
   <div class="card card-body shadow-sm mb-4 profile-hero-card">
     <div class="row align-items-center">
       <div class="col-md-2 text-center">
-        <img src="<%= maidData.image %>" onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'" class="rounded-circle img-fluid booking-avatar" alt="Profile Picture">
+        <img src="<%= maidData.image && maidData.image.url ? maidData.image.url : "" %>" onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'" class="rounded-circle img-fluid booking-avatar" alt="Profile Picture">
       </div>
       <div class="col-md-10">
         <h2 class="text-dark">Welcome, <%= maidData.username %>!</h2>

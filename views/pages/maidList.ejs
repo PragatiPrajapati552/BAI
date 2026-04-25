@@ -4,7 +4,7 @@
     <% for(let maid of filterMaid){%>
       <div class="pro-card">
         <div class="pro-avatar-wrapper">
-          <img src="<%=maid.image%>" onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'" alt="Avatar">
+          <img src="<%= maid.image && maid.image.url ? maid.image.url : "" %>" onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'" alt="Avatar">
         </div>
         
         <h5 class="pro-name"><%=maid.username%></h5>

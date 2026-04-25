@@ -1,7 +1,7 @@
 <%layout("layout/boilerplate")%>
 <div class="profile">
   <img
-    src="<%=maidData.image%>"
+    src="<%= maidData.image && maidData.image.url ? maidData.image.url : "" %>"
     onerror="this.src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'"
     style="object-fit: cover;"
     class="mProfileImage"
