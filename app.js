@@ -13,6 +13,7 @@ const authRoutes = require("./routes/auth");
 const pageRoutes = require("./routes/pages");
 const maidRoutes = require("./routes/maid");
 const bookingRoutes = require("./routes/bookings");
+const ExpressError = require("./utils/ExpressError");
 
 const app = express();
 
@@ -59,6 +60,16 @@ app.use(pageRoutes);
 app.use(maidRoutes);
 app.use(bookingRoutes);
 
+app.use((req, res, next) => {
+  next(new ExpressError("Page Not Found", 404));
+});
+
+app.use((err, req, res, next) => {
+  const { statusCode = 500 } = err;
+  if (!err.message) err.message = "Oh No, Something Went Wrong!";
+  res.status(statusCode).render("error", { err });
+});
+
 if (!process.env.MONGO_URL) {
   throw new Error("MONGO_URL is missing in .env");
 }
@@ -76,7 +87,7 @@ async function main() {
 main()
   .then(() => {
     console.log("Connected to db");
-    app.listen(process.env.PORT, () => {
+    app.listen(process.env.PORT || 3000, () => {
       console.log("Server is listening to port 3000");
     });
   })

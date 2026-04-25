@@ -1,6 +1,7 @@
 const express = require("express");
 const Maid = require("../models/maid");
 const { isUser } = require("../middleware");
+const catchAsync = require("../utils/catchAsync");
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ serviceRoutes.forEach((routePath) => {
   });
 });
 
-router.get("/maidList", async (req, res) => {
+router.get("/maidList", catchAsync(async (req, res) => {
   try {
     let services = req.query.services;
     const { lat, lng } = req.query;
@@ -56,6 +57,6 @@ router.get("/maidList", async (req, res) => {
 
     res.render("pages/maidList", { filterMaid: fallbackMaids });
   }
-});
+}));
 
 module.exports = router;

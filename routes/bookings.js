@@ -2,6 +2,7 @@ const express = require("express");
 const Booking = require("../models/booking");
 const Maid = require("../models/maid");
 const { isUser } = require("../middleware");
+const catchAsync = require("../utils/catchAsync");
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ const buildBookingDateTime = (date, timeSlot) => {
   return Number.isNaN(selectedDateTime.getTime()) ? null : selectedDateTime;
 };
 
-router.post("/book/:maidId", isUser, async (req, res) => {
+router.post("/book/:maidId", isUser, catchAsync(async (req, res) => {
   try {
     const { services, date, timeSlot } = req.body;
     const selectedServices = Array.isArray(services)
@@ -52,9 +53,9 @@ router.post("/book/:maidId", isUser, async (req, res) => {
     req.flash("error", "Failed to book appointment. Please try again.");
     res.redirect("/maidList");
   }
-});
+}));
 
-router.post("/maid/:maidId/review", isUser, async (req, res) => {
+router.post("/maid/:maidId/review", isUser, catchAsync(async (req, res) => {
   try {
     const { rating, comment } = req.body;
     const maid = await Maid.findById(req.params.maidId);
@@ -78,9 +79,9 @@ router.post("/maid/:maidId/review", isUser, async (req, res) => {
     req.flash("error", "Could not add review. Ensure all fields are filled.");
     res.redirect(req.get("Referrer") || "/");
   }
-});
+}));
 
-router.post("/maid/:maidId/review/:reviewId/delete", isUser, async (req, res) => {
+router.post("/maid/:maidId/review/:reviewId/delete", isUser, catchAsync(async (req, res) => {
   try {
     const { maidId, reviewId } = req.params;
     const maid = await Maid.findById(maidId);
@@ -107,9 +108,9 @@ router.post("/maid/:maidId/review/:reviewId/delete", isUser, async (req, res) =>
     req.flash("error", "Could not delete review.");
     res.redirect(req.get("Referrer") || "/");
   }
-});
+}));
 
-router.get("/myBookings", isUser, async (req, res) => {
+router.get("/myBookings", isUser, catchAsync(async (req, res) => {
   try {
     const bookings = await Booking.find({ user: req.user._id })
       .populate("maid", "username contact image")
@@ -120,9 +121,9 @@ router.get("/myBookings", isUser, async (req, res) => {
     req.flash("error", "Could not load your bookings.");
     res.redirect("/");
   }
-});
+}));
 
-router.post("/user/booking/:id/cancel", isUser, async (req, res) => {
+router.post("/user/booking/:id/cancel", isUser, catchAsync(async (req, res) => {
   try {
     const { id } = req.params;
     const booking = await Booking.findById(id);
@@ -146,6 +147,6 @@ router.post("/user/booking/:id/cancel", isUser, async (req, res) => {
     req.flash("error", "Action failed. Try again.");
     res.redirect("/myBookings");
   }
-});
+}));
 
 module.exports = router;

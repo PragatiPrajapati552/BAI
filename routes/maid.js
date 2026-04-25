@@ -1,6 +1,7 @@
 const express = require("express");
 const Booking = require("../models/booking");
 const { isMaid } = require("../middleware");
+const catchAsync = require("../utils/catchAsync");
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.get("/maid/home", isMaid, (req, res) => {
   }
 });
 
-router.get("/maidCalendar", isMaid, async (req, res) => {
+router.get("/maidCalendar", isMaid, catchAsync(async (req, res) => {
   if (!req.user) {
     req.flash("error", "You must be logged in as a Maid to view this page.");
     return res.redirect("/maidLogin");
@@ -30,9 +31,9 @@ router.get("/maidCalendar", isMaid, async (req, res) => {
     req.flash("error", "Could not load your calendar.");
     res.redirect("/maid/home");
   }
-});
+}));
 
-router.post("/booking/:id/:status", isMaid, async (req, res) => {
+router.post("/booking/:id/:status", isMaid, catchAsync(async (req, res) => {
   try {
     const { id, status } = req.params;
 
@@ -56,6 +57,6 @@ router.post("/booking/:id/:status", isMaid, async (req, res) => {
     req.flash("error", "Action failed. Try again.");
     res.redirect("/maidCalendar");
   }
-});
+}));
 
 module.exports = router;

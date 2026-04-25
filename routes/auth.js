@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const User = require("../models/user");
 const Maid = require("../models/maid");
+const catchAsync = require("../utils/catchAsync");
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ router.get("/signup", (req, res) => {
   res.render("authentication/signup.ejs");
 });
 
-router.post("/signup", async (req, res, next) => {
+router.post("/signup", catchAsync(async (req, res, next) => {
   const { username, password, email, contact, area, city, country } = req.body;
 
   if (!username || !password || !area || !city || !country) {
@@ -30,7 +31,7 @@ router.post("/signup", async (req, res, next) => {
     req.flash("error", e.message);
     res.redirect("/signup");
   }
-});
+}));
 
 router.get("/login", (req, res) => {
   res.render("authentication/login.ejs");
@@ -42,10 +43,10 @@ router.post(
     failureRedirect: "/login",
     failureFlash: true,
   }),
-  async (req, res) => {
+  catchAsync(async (req, res) => {
     req.flash("success", "Logged in successfully");
     res.redirect("/");
-  }
+  })
 );
 
 router.get("/logout", (req, res, next) => {
@@ -60,7 +61,7 @@ router.get("/maidSignup", (req, res) => {
   res.render("authentication/maidSignup");
 });
 
-router.post("/maidSignup", async (req, res, next) => {
+router.post("/maidSignup", catchAsync(async (req, res, next) => {
   const {
     username,
     password,
@@ -119,7 +120,7 @@ router.post("/maidSignup", async (req, res, next) => {
     req.flash("error", e.message);
     res.redirect("/maidSignup");
   }
-});
+}));
 
 router.get("/maidLogin", (req, res) => {
   res.render("authentication/maidLogin.ejs");
@@ -131,10 +132,10 @@ router.post(
     failureRedirect: "/maidLogin",
     failureFlash: true,
   }),
-  async (req, res) => {
+  catchAsync(async (req, res) => {
     req.flash("success", "Logged in successfully");
     res.redirect("/maid/home");
-  }
+  })
 );
 
 module.exports = router;
