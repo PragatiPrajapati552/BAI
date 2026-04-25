@@ -6,7 +6,7 @@
       action="/maidSignup"
       method="POST"
       novalidate
-      class="needs-validation"
+      class="needs-validation" enctype="multipart/form-data"
     >
       <div class="mb-2">
         <input
@@ -41,12 +41,7 @@
         <div class="invalid-feedback">Enter a valid contact</div>
       </div>
       <div class="mb-2">
-        <input
-          name="image"
-          placeholder="Profile Image URL (optional)"
-          type="text"
-          class="form-control"
-        />
+        <input name="image" type="file" class="form-control" accept="image/*" />
         <div class="invalid-feedback">Enter a image</div>
       </div>
       <div class="row align-items-start mt-2">

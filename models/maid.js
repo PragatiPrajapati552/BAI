@@ -18,7 +18,8 @@ const maidSchema = new Schema({
     required: true,
   },
   image: {
-    type: String,
+    url: String,
+    filename: String,
   },
   services: {
     type: [String],

@@ -3,6 +3,9 @@ const passport = require("passport");
 const User = require("../models/user");
 const Maid = require("../models/maid");
 const catchAsync = require("../utils/catchAsync");
+const multer = require("multer");
+const { storage } = require("../cloudinary");
+const upload = multer({ storage });
 
 const router = express.Router();
 
@@ -61,7 +64,7 @@ router.get("/maidSignup", (req, res) => {
   res.render("authentication/maidSignup");
 });
 
-router.post("/maidSignup", catchAsync(async (req, res, next) => {
+router.post("/maidSignup", upload.single("image"), catchAsync(async (req, res, next) => {
   const {
     username,
     password,
@@ -107,6 +110,10 @@ router.post("/maidSignup", catchAsync(async (req, res, next) => {
     country,
     location: locationData,
   });
+
+  if (req.file) {
+    newMaid.image = { url: req.file.path, filename: req.file.filename };
+  }
 
   try {
     const registerdMaid = await Maid.register(newMaid, password);
